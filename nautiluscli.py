@@ -53,7 +53,7 @@ def nautilus(action, collection, file: UrlOrFile, query):
     Examples:
 
     \b
-    1. Create a new collection `myCollection` in the shared demo account
+    1. Create a new Collection `myCollection` in the shared demo account
     >>> poetry run python nautiluscli.py create-collection myCollection
 
     \b
@@ -61,12 +61,12 @@ def nautilus(action, collection, file: UrlOrFile, query):
     >>> poetry run python nautiluscli.py upsert-vectors myCollection --file=https://arxiv.org/pdf/1706.03762.pdf
 
     \b
-    3. Alternatively, upload a PDF for indexing. Note that demo account an all collections are publicly accessible
-       to everyone, so please do not upload anything sensitive!
+    3. Alternatively, upload a PDF for indexing. Note that demo account and all Collections are publicly accessible
+       , so please do not upload anything sensitive!
     >>> poetry run python nautiluscli.py upsert-vectors myCollection --file=README.md
 
     \b
-    4. Query a Collection to get answers to your question!
+    4. Query a Collection to get answers!
     >>> poetry run python nautiluscli.py ask myCollection --query="what is a transformer?"
     """
     t0 = time.monotonic()
