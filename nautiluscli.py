@@ -89,6 +89,8 @@ def nautilus(action, collection, file: UrlOrFile, query):
                 add_web_doc(api_endpoint, collection, file.value)
             else:
                 add_doc(api_endpoint, collection, file.value)
+        case _:
+            raise click.BadParameter(f"Unsupported action {action}")
     t1 = time.monotonic()
     print(f"Run time: {t1 - t0:.4f}s")
 
