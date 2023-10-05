@@ -3,8 +3,7 @@ import time
 
 import click
 
-from lib.embedding_model import EmbeddingModel
-from lib.api import create_collection, add_doc, ask, add_web_doc, delete_collection
+from nautiluscli.api import create_collection, add_doc, ask, add_web_doc, delete_collection
 from urllib import parse
 
 DEMO_COLLECTION = 'NautilusDBDemoCollection'
@@ -44,7 +43,7 @@ class UrlOrFile(click.ParamType):
 @click.option('--file', '-f', type=UrlOrFile())
 @click.option('--query', '-q')
 #@click.option('--gen/--nogen', default=True)
-def nautilus(action, collection, file: UrlOrFile, query):
+def run(action, collection, file: UrlOrFile, query):
     """
     A command-line tool to interact with NautilusDB. You can manage collections, add new vectors and query any
     collection from this CLI.
@@ -96,4 +95,4 @@ def nautilus(action, collection, file: UrlOrFile, query):
 
 
 if __name__ == "__main__":
-    nautilus()
+    run()
