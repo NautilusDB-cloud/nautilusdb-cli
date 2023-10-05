@@ -4,7 +4,7 @@ import time
 import click
 
 from lib.embedding_model import EmbeddingModel
-from lib.cli import create_collection, add_doc, ask, add_web_doc, delete_collection
+from lib.api import create_collection, add_doc, ask, add_web_doc, delete_collection
 from urllib import parse
 
 DEMO_COLLECTION = 'NautilusDBDemoCollection'

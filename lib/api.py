@@ -1,45 +1,62 @@
-import json
-from pydantic import BaseModel, model_validator
-from typing import List
+import argparse
+from urllib import request
 
-ANSWER_REF_SAMPLE_TEXT_LEN = 50
+import requests
+import os
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-class CreateQACollectionRequest(BaseModel):
-    name: str
-
-
-class DeleteQACollectionRequest(BaseModel):
-    name: str
-
-
-class AddDocRequest(BaseModel):
-    collection_name: str
-
-    @model_validator(mode='before')
-    @classmethod
-    def validate_to_json(cls, value):
-        if isinstance(value, str):
-            return cls(**json.loads(value))
-        return value
-
-    def to_json_string(self) -> str:
-        # fastapi server expects "property name enclosed in double quotes" when
-        # using with UploadFile. pydantic.model_dump_json() uses single quote.
-        # explicitly uses json.dumps for AddDocRequest.
-        return json.dumps(self.__dict__)
+from lib.model import (
+    CreateQACollectionRequest,
+    DeleteQACollectionRequest,
+    AddDocRequest,
+    AskRequest,
+)
 
 
-class AskRequest(BaseModel):
-    collection_name: str
-    question: str
+def create_collection(url: str, name: str):
+    url += "/qacollections/create"
+    req = CreateQACollectionRequest(name=name)
+    resp = requests.post(url=url, data=req.model_dump_json())
+    print("status_code:", resp.status_code, resp.json())
 
 
-class AnswerReference(BaseModel):
-    doc_name: str
-    sample_text: str
+def delete_collection(url: str, name: str):
+    url += "/qacollections/delete"
+    req = DeleteQACollectionRequest(name=name)
+    resp = requests.post(url=url, data=req.model_dump_json())
+    print("status_code:", resp.status_code, resp.json())
 
 
-class AskResponse(BaseModel):
-    answer: str
-    refs: List[AnswerReference]
+def list_collections(url: str):
+    url += "/qacollections/list"
+    resp = requests.get(url=url)
+    print("status_code:", resp.status_code, resp.json())
+
+
+def add_doc(url: str, clname: str, file_path: str):
+    url += "/qadocs/add"
+    req = AddDocRequest(collection_name=clname)
+    data = {"request": req.model_dump_json()}
+    fname = os.path.basename(file_path)
+    with open(file_path, 'rb') as f:
+        resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
+        print("status_code:", resp.status_code, resp.json())
+
+
+def add_web_doc(url: str, clname: str, file_path: str):
+    url += "/qadocs/add"
+    req = AddDocRequest(collection_name=clname)
+    data = {"request": req.model_dump_json()}
+    fname = os.path.basename(file_path)
+    with request.urlopen(file_path) as f:
+        resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
+        print("status_code:", resp.status_code, resp.json())
+
+
+def ask(url: str, clname: str, q: str):
+    url += "/qadocs/ask"
+    req = AskRequest(collection_name=clname, question=q)
+    resp = requests.post(url=url, data=req.model_dump_json())
+    print("status_code:", resp.status_code, resp.json())
