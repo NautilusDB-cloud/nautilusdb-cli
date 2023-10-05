@@ -30,7 +30,7 @@ class UrlOrFile(click.ParamType):
             return UrlOrFile('file', value)
 
         parsed_value = parse.urlparse(value)
-        if parsed_value.scheme != '' and parsed_value.scheme not in ("http", "https"):
+        if parsed_value.scheme not in ("http", "https"):
             self.fail(f"Invalid URL or file name \"{value}\"")
         return UrlOrFile('url', value)
 
@@ -72,22 +72,22 @@ def run(action, collection, file: UrlOrFile, query):
     api_endpoint = DEMO_API_ENDPOINT
     match action:
         case 'create-collection':
-            create_collection(api_endpoint, collection)
+            click.echo(create_collection(api_endpoint, collection))
         case 'delete-collection':
-            delete_collection(api_endpoint, collection)
+            click.echo(delete_collection(api_endpoint, collection))
         case 'ask':
             if query is None or query == '':
                 raise click.BadParameter("No question specified")
-            ask(api_endpoint, collection, query)
+            click.echo(ask(api_endpoint, collection, query))
         case 'upsert-vectors':
             if file is None:
                 raise click.BadParameter("Must specify a file or an URL")
 
             # Handle URL separately
             if file.is_url():
-                add_web_doc(api_endpoint, collection, file.value)
+                click.echo(add_web_doc(api_endpoint, collection, file.value))
             else:
-                add_doc(api_endpoint, collection, file.value)
+                click.echo(add_doc(api_endpoint, collection, file.value))
         case _:
             raise click.BadParameter(f"Unsupported action {action}")
     t1 = time.monotonic()
