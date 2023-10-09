@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "nautiluscli"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Jun Luo <jun.luo@nautilusdb.com>", "Sriram Sankaran <sriram@nautilusdb.com>", "Ryan Kang <ryan.kang@nautilusdb.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 click = "^8.1.7"
 requests = "^2.31.0"
 pydantic = "^2.4.2"
@@ -22,7 +22,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "nautiluscli"
-version = "0.0.1"
+version = "0.1.1"
 authors = [
   { name="Jun Luo", email="jun.luo@nautilisdb.com" },
   { name="Sriram Sankaran", email="sriram@nautilusdb.com" },

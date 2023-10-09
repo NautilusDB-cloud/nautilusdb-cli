@@ -3,6 +3,7 @@ from urllib import request
 import requests
 import os
 import sys
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -54,8 +55,20 @@ def add_web_doc(url: str, clname: str, file_path: str):
         return("status_code:", resp.status_code, resp.json())
 
 
-def ask(url: str, clname: str, q: str):
+def ask(url: str, clname: str, q: str, explain: bool):
     url += "/qadocs/ask"
     req = AskRequest(collection_name=clname, question=q)
     resp = requests.post(url=url, data=req.model_dump_json())
+    answer = resp.json()
+
+    # Pretty-format success cases
+    if not explain and 'answer' in answer:
+        return answer.get("answer")
+    elif resp.status_code == 200:
+        return json.dumps(answer, indent=4)
     return("status_code:", resp.status_code, resp.json())
+
+def list_collections(url: str):
+    url += "/qacollections/list"
+    resp = requests.get(url=url)
+    print("status_code:", resp.status_code, resp.json())
