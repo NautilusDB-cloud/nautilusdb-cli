@@ -40,6 +40,9 @@ def add_doc(url: str, clname: str, file_path: str):
     req = AddDocRequest(collection_name=clname)
     data = {"request": req.model_dump_json()}
     fname = os.path.basename(file_path)
+    validation_error = validate_file(file_path)
+    if validation_error is not None:
+        return validation_error
     with open(file_path, 'rb') as f:
         resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
         return("status_code:", resp.status_code, resp.json())
@@ -50,10 +53,36 @@ def add_web_doc(url: str, clname: str, file_path: str):
     req = AddDocRequest(collection_name=clname)
     data = {"request": req.model_dump_json()}
     fname = os.path.basename(file_path)
+
+    validation_error = validate_url_file(file_path)
+    if validation_error is not None:
+        return validation_error
+
     with request.urlopen(file_path) as f:
         resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
         return("status_code:", resp.status_code, resp.json())
 
+
+def validate_url_file(url):
+    nbyte = 0
+    try:
+        resp = requests.request('HEAD', url)
+        nbyte = int(resp.headers.get("Content-Length"))
+    except Exception as e:
+        pass
+    if nbyte > 9_500_000:
+        return (
+            f"File {url} exceeds size limit 9.5MB, actual size {nbyte} "
+            f"bytes")
+    return None
+
+
+def validate_file(path: str):
+    nbyte = os.path.getsize(path)
+    if nbyte > 9_500_000:
+        return (f"File {path} exceeds size limit 9.5MB, actual size {nbyte} "
+                f"bytes")
+    return None
 
 def ask(url: str, clname: str, q: str, explain: bool):
     url += "/qadocs/ask"
@@ -72,3 +101,4 @@ def list_collections(url: str):
     url += "/qacollections/list"
     resp = requests.get(url=url)
     print("status_code:", resp.status_code, resp.json())
+
