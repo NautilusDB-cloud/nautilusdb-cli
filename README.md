@@ -8,7 +8,8 @@ the product and releasing new features and we'd love to hear your feedback!
 Please take a moment to fill out this [feedback form](https://forms.gle/pif6Vx2LqPjW5v4w5) to help us understand your use-case better.
 
 > [!IMPORTANT]
->By default, all collections are subject to permanent deletion after 2 weeks. Please let us know if you need to keep it for longer via the feedback form.
+> By default, all collections are subject to permanent deletion after 2 weeks. Please let us know if you need to keep it for longer via the feedback form.
+
 
 ## Quickstart
 You can try out NautilusDB right away. We have prepared a special public 
@@ -67,7 +68,7 @@ nautiluscli ask myCollection "what is a transformer?"
 ```
 
 ### Delete the Collection
-You can optionally delete the collection. This deletion is non-reversible. 
+You can optionally delete the collection. Deletions are non-reversible. 
 ```shell
 nautiluscli delete-collection myCollection
 ```
