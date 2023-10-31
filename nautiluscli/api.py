@@ -8,31 +8,52 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from nautiluscli.model import (
-    CreateQACollectionRequest,
-    DeleteQACollectionRequest,
+    CreateCollectionRequest,
+    DeleteCollectionRequest,
     AddDocRequest,
     AskRequest,
+    CreateApiKeyRequest,
 )
 
 
+def _get_headers():
+    api_key = os.getenv('NAUTILUSDB_API_KEY', None)
+    return {'api-key': api_key} if api_key is not None and api_key != "" else None
+
+
+def post(url, data=None, files=None):
+    return requests.post(url=url, data=data, files=files, headers=_get_headers())
+
+
+def get(url):
+    return requests.get(url=url, headers=_get_headers())
+
+
+def create_api_key(url: str):
+    url += "/apikey/create"
+    req = CreateApiKeyRequest()
+    resp = post(url=url, data=req.model_dump_json())
+    return ("status_code:", resp.status_code, resp.json())
+
 def create_collection(url: str, name: str):
-    url += "/qacollections/create"
-    req = CreateQACollectionRequest(name=name)
-    resp = requests.post(url=url, data=req.model_dump_json())
-    return("status_code:", resp.status_code, resp.json())
+    url += "/collections/create"
+    metas = {"text": "string", "tokens": "int", "filename": "string"}
+    req = CreateCollectionRequest(name=name, dimension=1536, metas=metas)
+    resp = post(url=url, data=req.model_dump_json())
+    return ("status_code:", resp.status_code, resp.json())
 
 
 def delete_collection(url: str, name: str):
-    url += "/qacollections/delete"
-    req = DeleteQACollectionRequest(name=name)
-    resp = requests.post(url=url, data=req.model_dump_json())
-    return("status_code:", resp.status_code, resp.json())
+    url += "/collections/delete"
+    req = DeleteCollectionRequest(name=name)
+    resp = post(url=url, data=req.model_dump_json())
+    return ("status_code:", resp.status_code, resp.json())
 
 
 def list_collections(url: str):
     url += "/qacollections/list"
-    resp = requests.get(url=url)
-    return("status_code:", resp.status_code, resp.json())
+    resp = get(url=url)
+    return ("status_code:", resp.status_code, resp.json())
 
 
 def add_doc(url: str, clname: str, file_path: str):
@@ -45,7 +66,7 @@ def add_doc(url: str, clname: str, file_path: str):
         return validation_error
     with open(file_path, 'rb') as f:
         resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
-        return("status_code:", resp.status_code, resp.json())
+        return ("status_code:", resp.status_code, resp.json())
 
 
 def add_web_doc(url: str, clname: str, file_path: str):
@@ -59,8 +80,8 @@ def add_web_doc(url: str, clname: str, file_path: str):
         return validation_error
 
     with request.urlopen(file_path) as f:
-        resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
-        return("status_code:", resp.status_code, resp.json())
+        resp = post(url=url, files={'file': (fname, f)}, data=data)
+        return ("status_code:", resp.status_code, resp.json())
 
 
 def validate_url_file(url):
@@ -84,10 +105,11 @@ def validate_file(path: str):
                 f"bytes")
     return None
 
+
 def ask(url: str, clname: str, q: str, explain: bool):
     url += "/qadocs/ask"
     req = AskRequest(collection_name=clname, question=q)
-    resp = requests.post(url=url, data=req.model_dump_json())
+    resp = post(url=url, data=req.model_dump_json())
     answer = resp.json()
 
     # Pretty-format success cases
@@ -95,10 +117,4 @@ def ask(url: str, clname: str, q: str, explain: bool):
         return answer.get("answer")
     elif resp.status_code == 200:
         return json.dumps(answer, indent=4)
-    return("status_code:", resp.status_code, resp.json())
-
-def list_collections(url: str):
-    url += "/qacollections/list"
-    resp = requests.get(url=url)
-    print("status_code:", resp.status_code, resp.json())
-
+    return ("status_code:", resp.status_code, resp.json())
