@@ -65,7 +65,7 @@ def add_doc(url: str, clname: str, file_path: str):
     if validation_error is not None:
         return validation_error
     with open(file_path, 'rb') as f:
-        resp = requests.post(url=url, files={'file': (fname, f)}, data=data)
+        resp = post(url=url, files={'file': (fname, f)}, data=data)
         return ("status_code:", resp.status_code, resp.json())
 
 

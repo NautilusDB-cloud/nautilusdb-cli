@@ -45,32 +45,39 @@ def cli():
      Examples:
 
      \b
-     1. [Optional] Create a new API key
-     >>>
+     1. [Optional] Create a new API key and set it in NAUTILUSDB_API_KEY env var
+     >>> nautiluscli create-api-key
      >>> export NAUTILUSDB_API_KEY='<key>'
 
-     1. Create a new Collection `myCollection` in the shared demo account
+     \b
+     2. [Optional] Check the current CLI configuration
+     >>> nautiluscli info
+
+     \b
+     3. Create a new Collection `myCollection` in the shared demo account
+        If an API key is configured, a private collection will be created that
+        is only accessible to the configured API key.
      >>> nautiluscli create-collection myCollection
 
      \b
-     2. [Optional] See a new Collection `myCollection` created
+     4. [Optional] See a new Collection `myCollection` created
      >>> nautiluscli list-collections
 
      \b
-     3. Index a PDF into `myCollection`. In this example, we will index the original research paper on Transformers.
+     5. Index a PDF into `myCollection`. In this example, we will index the original research paper on Transformers.
      >>> nautiluscli upload-file myCollection https://arxiv.org/pdf/1706.03762.pdf
 
      \b
-     4. Alternatively, upload a PDF for indexing. Note that demo account and all Collections are publicly accessible
+     6. Alternatively, upload a PDF for indexing. Note that demo account and all Collections are publicly accessible
         , so please do not upload anything sensitive!
      >>> nautiluscli upload-file myCollection README.md
 
      \b
-     5. Ask and get answers. Referenced source data is also returned.
-     >>> nautiluscli ask myCollection "what is a transformer?" --explain
+     7. Ask and get answers. Referenced source data is also returned.
+     >>> nautiluscli ask myCollection "what is a transformer?"
 
      \b
-     6. [Optional] Delete the Collection
+     8. [Optional] Delete the Collection
      >>> nautiluscli delete-collection myCollection
      """
     pass
