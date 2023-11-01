@@ -29,31 +29,46 @@ def get(url):
     return requests.get(url=url, headers=_get_headers())
 
 
+def get_response(resp: requests.Response):
+    if resp.status_code == 200:
+        return resp.json()
+
+    try:
+        # Try parsing out server error
+        reason = json.loads(resp.content)
+        return reason.get('detail')
+    except Exception as e:
+        # Probably an error thrown somewhere else
+        # simply return the response content.
+        return resp.content
+
+
 def create_api_key(url: str):
     url += "/apikey/create"
     req = CreateApiKeyRequest()
     resp = post(url=url, data=req.model_dump_json())
-    return ("status_code:", resp.status_code, resp.json())
+    return ("status_code:", resp.status_code, get_response(resp))
+
 
 def create_collection(url: str, name: str):
     url += "/collections/create"
     metas = {"text": "string", "tokens": "int", "filename": "string"}
     req = CreateCollectionRequest(name=name, dimension=1536, metas=metas)
     resp = post(url=url, data=req.model_dump_json())
-    return ("status_code:", resp.status_code, resp.json())
+    return ("status_code:", resp.status_code, get_response(resp))
 
 
 def delete_collection(url: str, name: str):
     url += "/collections/delete"
     req = DeleteCollectionRequest(name=name)
     resp = post(url=url, data=req.model_dump_json())
-    return ("status_code:", resp.status_code, resp.json())
+    return ("status_code:", resp.status_code, get_response(resp))
 
 
 def list_collections(url: str):
     url += "/qacollections/list"
     resp = get(url=url)
-    return ("status_code:", resp.status_code, resp.json())
+    return ("status_code:", resp.status_code, get_response(resp))
 
 
 def add_doc(url: str, clname: str, file_path: str):
@@ -66,7 +81,7 @@ def add_doc(url: str, clname: str, file_path: str):
         return validation_error
     with open(file_path, 'rb') as f:
         resp = post(url=url, files={'file': (fname, f)}, data=data)
-        return ("status_code:", resp.status_code, resp.json())
+        return ("status_code:", resp.status_code, get_response(resp))
 
 
 def add_web_doc(url: str, clname: str, file_path: str):
@@ -81,7 +96,7 @@ def add_web_doc(url: str, clname: str, file_path: str):
 
     with request.urlopen(file_path) as f:
         resp = post(url=url, files={'file': (fname, f)}, data=data)
-        return ("status_code:", resp.status_code, resp.json())
+        return ("status_code:", resp.status_code, get_response(resp))
 
 
 def validate_url_file(url):
