@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nautiluscli"
 description = "Command-line interface for NautilusDB"
-version = "0.5.0"
+version = "0.5.1"
 requires-python = ">=3.10"
 authors = ["NautilusDB <contact@nautilusdb.com>"]
 readme = "README.md"
