@@ -1,4 +1,4 @@
-# nautilusdb-python-client
+# nautilusdb-cli
 
 A command-line tool for [NautilusDB](http://nautilusdb.com), a fully-managed, 
 cloud-native vector search service.
