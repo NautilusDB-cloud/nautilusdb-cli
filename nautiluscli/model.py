@@ -1,15 +1,36 @@
 import json
+from enum import Enum
+
 from pydantic import BaseModel, model_validator
-from typing import List
-
-ANSWER_REF_SAMPLE_TEXT_LEN = 50
+from typing import List, Optional, Dict
 
 
-class CreateQACollectionRequest(BaseModel):
+class ColumnType(str, Enum):
+    Boolean = "boolean"
+    Int = "int"
+    Long = "long"
+    Float = "float"
+    Double = "double"
+    String = "string"
+    Bytes = "bytes"
+
+
+class CreateApiKeyRequest(BaseModel):
+    pass
+
+
+class CreateApiKeyResponse(BaseModel):
+    api_key: str
+
+
+class CreateCollectionRequest(BaseModel):
     name: str
+    dimension: int
+    description: Optional[str] = None
+    metas: Optional[Dict[str, ColumnType]] = None
 
 
-class DeleteQACollectionRequest(BaseModel):
+class DeleteCollectionRequest(BaseModel):
     name: str
 
 

@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "nautiluscli"
-version = "0.1.2"
-description = ""
-authors = ["Jun Luo <jun.luo@nautilusdb.com>", "Sriram Sankaran <sriram@nautilusdb.com>", "Ryan Kang <ryan.kang@nautilusdb.com>"]
+description = "Command-line interface for NautilusDB"
+version = "0.5.1"
+requires-python = ">=3.10"
+authors = ["NautilusDB <contact@nautilusdb.com>"]
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -20,23 +27,6 @@ nautiluscli = 'nautiluscli.cli:run'
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "nautiluscli"
-version = "0.1.2"
-authors = [
-  { name="Jun Luo", email="jun.luo@nautilisdb.com" },
-  { name="Sriram Sankaran", email="sriram@nautilusdb.com" },
-  { name="Ryan Kang", email="ryan.kang@nautilisdb.com" },
-]
-description = "Command-line interface for NautilusDB"
-readme = "README.md"
-requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
-]
-
 [project.urls]
-"Homepage" = "https://github.com/JuniusLuo/nautilusdb-python-client"
-"Bug Tracker" = "https://github.com/JuniusLuo/nautilusdb-python-client/issues"
+"Homepage" = "https://www.nautilusdb.com"
+"Bug Tracker" = "https://forms.gle/pif6Vx2LqPjW5v4w5"

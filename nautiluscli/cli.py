@@ -8,8 +8,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import nautiluscli.api as api
 from urllib import parse
 
-DEMO_COLLECTION = 'NautilusDBDemoCollection'
-DEMO_API_ENDPOINT = "https://b487hc1om1.execute-api.us-west-2.amazonaws.com/alpha"
+PUBLIC_ACCOUNT = 'public'
+PUBLIC_API_ENDPOINT = f'http://{PUBLIC_ACCOUNT}.us-west-2.aws.nautilusdb.com'
 
 
 class UrlOrFile(click.ParamType):
@@ -45,28 +45,39 @@ def cli():
      Examples:
 
      \b
-     1. Create a new Collection `myCollection` in the shared demo account
+     1. [Optional] Create a new API key and set it in NAUTILUSDB_API_KEY env var
+     >>> nautiluscli create-api-key
+     >>> export NAUTILUSDB_API_KEY='<key>'
+
+     \b
+     2. [Optional] Check the current CLI configuration
+     >>> nautiluscli info
+
+     \b
+     3. Create a new Collection `myCollection` in the shared demo account
+        If an API key is configured, a private collection will be created that
+        is only accessible to the configured API key.
      >>> nautiluscli create-collection myCollection
 
      \b
-     2. [Optional] See a new Collection `myCollection` created
+     4. [Optional] See a new Collection `myCollection` created
      >>> nautiluscli list-collections
 
      \b
-     3. Index a PDF into `myCollection`. In this example, we will index the original research paper on Transformers.
+     5. Index a PDF into `myCollection`. In this example, we will index the original research paper on Transformers.
      >>> nautiluscli upload-file myCollection https://arxiv.org/pdf/1706.03762.pdf
 
      \b
-     4. Alternatively, upload a PDF for indexing. Note that demo account and all Collections are publicly accessible
+     6. Alternatively, upload a PDF for indexing. Note that demo account and all Collections are publicly accessible
         , so please do not upload anything sensitive!
      >>> nautiluscli upload-file myCollection README.md
 
      \b
-     5. Ask and get answers. Referenced source data is also returned.
-     >>> nautiluscli ask myCollection "what is a transformer?" --explain
+     7. Ask and get answers. Referenced source data is also returned.
+     >>> nautiluscli ask myCollection "what is a transformer?"
 
      \b
-     6. [Optional] Delete the Collection
+     8. [Optional] Delete the Collection
      >>> nautiluscli delete-collection myCollection
      """
     pass
@@ -77,7 +88,7 @@ def list_collections():
     """
     List all collection names in the current account.
     """
-    click.echo(api.list_collections(DEMO_API_ENDPOINT))
+    click.echo(api.list_collections(PUBLIC_API_ENDPOINT))
 
 
 @cli.command("delete-collection")
@@ -86,7 +97,7 @@ def delete_collections(collection):
     """
     Permanently delete a collection.
     """
-    click.echo(api.delete_collection(DEMO_API_ENDPOINT, collection))
+    click.echo(api.delete_collection(PUBLIC_API_ENDPOINT, collection))
 
 
 @cli.command("create-collection")
@@ -95,7 +106,7 @@ def create_collections(collection):
     """
     Create a collection
     """
-    click.echo(api.create_collection(DEMO_API_ENDPOINT, collection))
+    click.echo(api.create_collection(PUBLIC_API_ENDPOINT, collection))
 
 
 @cli.command("upload-file")
@@ -110,9 +121,9 @@ def upload_file(collection, file):
 
     # Handle URL separately
     if file.is_url():
-        click.echo(api.add_web_doc(DEMO_API_ENDPOINT, collection, file.value))
+        click.echo(api.add_web_doc(PUBLIC_API_ENDPOINT, collection, file.value))
     else:
-        click.echo(api.add_doc(DEMO_API_ENDPOINT, collection, file.value))
+        click.echo(api.add_doc(PUBLIC_API_ENDPOINT, collection, file.value))
 
 
 @cli.command("ask")
@@ -123,7 +134,29 @@ def ask(collection, question, explain):
     """
     Ask a question against a collection
     """
-    click.echo(api.ask(DEMO_API_ENDPOINT, collection, question, explain))
+    click.echo(api.ask(PUBLIC_API_ENDPOINT, collection, question, explain))
+
+
+@cli.command("info")
+def info():
+    """
+    Displays current cli configuration
+    """
+    api_key = os.getenv('NAUTILUSDB_API_KEY')
+    if api_key is None or api_key == '':
+        api_key = '<none configured>'
+    click.echo("The current configuration of NautilusDB is:")
+    click.echo(f"Account:      {PUBLIC_ACCOUNT}")
+    click.echo(f"API endpoint: {PUBLIC_API_ENDPOINT}")
+    click.echo(f"API key:      {api_key}")
+
+
+@cli.command("create-api-key")
+def create_api_key():
+    """
+    Creates a new API key
+    """
+    click.echo(api.create_api_key(PUBLIC_API_ENDPOINT))
 
 
 def run():
