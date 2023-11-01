@@ -7,7 +7,6 @@ NautilusDB is currently in <ins>**public alpha**</ins>. We're actively improving
 the product and releasing new features and we'd love to hear your feedback! 
 Please take a moment to fill out this [feedback form](https://forms.gle/pif6Vx2LqPjW5v4w5) to help us understand your use-case better.
 
-> [!IMPORTANT]
 > By default, all collections are subject to permanent deletion after 2 weeks. Please let us know if you need to keep it for longer via the feedback form.
 
 
