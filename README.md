@@ -17,6 +17,14 @@ collection ```openai-web``` that can answer questions about the contents of ```w
 ```shell
 nautiluscli ask openai-web "what is red team?"
  ```
+## Installation
+Install a released NautilusDB cli from pip.
+
+python3 version ```>= 3.10``` is required
+
+```shell
+pip3 install nautiluscli
+```
 
 ## Examples:
 
