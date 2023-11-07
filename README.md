@@ -1,4 +1,4 @@
-# nautilusdb-python-client
+# nautilusdb-cli
 
 A command-line tool for [NautilusDB](http://nautilusdb.com), a fully-managed, 
 cloud-native vector search service.
@@ -43,8 +43,8 @@ nautiluscli info
 ```
 
 ### Create a new Collection 
-Create a new collection ```myCollection``` in the shared demo account. If an 
-API key is configured, a private collection will be created that is only accessible to the configured API key.
+Create a new collection ```myCollection``` in the shared demo account. 
+A collection will be created that is only accessible to the configured API key.
 ```shell
  nautiluscli create-collection myCollection
 ```
